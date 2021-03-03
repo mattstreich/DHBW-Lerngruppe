@@ -1,6 +1,7 @@
 import cv2
 import ImageManipulation as IM
 import Utilities
+from matplotlib import pyplot as plt
 
 
 #Group F: Daniel Arnaudo, Daniel Christen, Jan Geppert & Matthias Streich
@@ -28,4 +29,11 @@ if __name__ == '__main__':
     #Print Details for BW
     picBW = cv2.cvtColor(pic,cv2.COLOR_BGR2GRAY)
     IM.printImageDetails(picBW)
+    #Calculating Histogram
+    hist = cv2.calcHist([picBW],[0],None,[256],[0,256])
+    plt.plot(hist)
+    plt.ylabel("Anzahl an Pixel")
+    plt.xlabel("Graustufen")
+    plt.show() 
+    
     
