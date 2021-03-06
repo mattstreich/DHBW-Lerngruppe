@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import Utilities
+import random
 
 # function to apply a look-up table onto an image
 def applyLUT(img, LUT):
@@ -101,6 +102,11 @@ def closeGapsHistogram(img):
 
     result = img.copy()
 
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            if result[i,j] >= 4 and result[i,j] <=251:
+                result[i,j] = result[i,j] + random.random()*10 - 5
+    
     return result
 
 # function to create a vector containing the histogram
