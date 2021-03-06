@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # Aufgabe 4: stretchHistogram auf Bild anwenden
     stretchedImg = HM.stretchHistogram(imgBW)
 
-    cv2.imshow("Image", stretchedImg)
+    cv2.imshow("stretch_Image", stretchedImg)
     Utilities.showHistogram(stretchedImg)
     cv2.waitKey(0)
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     # Aufgabe 6: equalizeHistogram auf Bild anwenden
     equalizedImg = HM.equalizeHistogram(imgBW)
 
-    cv2.imshow("Image", equalizedImg)
+    cv2.imshow(" equalize_Image", equalizedImg)
     Utilities.showHistogram(equalizedImg)
     cv2.waitKey(0)
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     #Zusatzaufgabe Logarithmus
     logImg = HM.logHistogram(imgBW)
 
-    cv2.imshow("Image", logImg)
+    cv2.imshow("log_Image", logImg)
     Utilities.showHistogram(logImg)
     cv2.waitKey(0)
 
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     #Zusazuaufgabe Expoential
     expImg = HM.expHistogram(imgBW)
 
-    cv2.imshow("Image", expImg)
+    cv2.imshow("exp_Image", expImg)
     Utilities.showHistogram(expImg)
     cv2.waitKey(0)
 
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     #Zusatzaufgabe Inverse
     invImg = HM.inverseHistogram(imgBW)
 
-    cv2.imshow("Image", invImg)
+    cv2.imshow("inverse_Image", invImg)
     Utilities.showHistogram(invImg)
     cv2.waitKey(0)
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     #Zusatzaufgabe Threshold
     tresholdImg = HM.tresholdHistogram(imgBW)
 
-    cv2.imshow("Image", tresholdImg)
+    cv2.imshow("treshold_Image", tresholdImg)
     Utilities.showHistogram(tresholdImg)
     cv2.waitKey(0)
 
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     #Zusatzaufgabe Lücken schließen
     closeGapImg = HM.closeGapsHistogram(equalizedImg)
 
-    cv2.imshow("Image", closeGapImg)
+    cv2.imshow("close_Gap_Image", closeGapImg)
     Utilities.showHistogram(closeGapImg)
     cv2.waitKey(0)
 

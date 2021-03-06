@@ -44,7 +44,7 @@ def stretchHistogram(img):
 def logHistogram(img):
     result = img.copy()
 
-    result_a = 256 / np.log(256)
+    result_a = 255 / np.log(255)
 
     for i in range(result.shape[0]):
         for j in range(result.shape[1]):
@@ -56,14 +56,14 @@ def logHistogram(img):
 def expHistogram(img):
     result = img.copy()
 
-    result_a = 256 / np.exp(256/256)
+    result_a = 255 / np.exp(255/255)
 
     #print(np.exp(256))
     #print(256 / np.exp(256))
 
     for i in range(result.shape[0]):
         for j in range(result.shape[1]):
-            result[i,j] = result_a * np.exp(result[i,j]/256 - 1)
+            result[i,j] = result_a * np.exp(result[i,j]/255 - 1)
 
     return result
 
@@ -85,7 +85,7 @@ def tresholdHistogram(img):
 
     result = img.copy()
 
-    result_threshold = 256 / 2 
+    result_threshold = 255 / 2 
 
     for i in range(result.shape[0]):
         for j in range(result.shape[1]):
@@ -100,10 +100,6 @@ def tresholdHistogram(img):
 def closeGapsHistogram(img):
 
     result = img.copy()
-
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            print("test")
 
     return result
 
