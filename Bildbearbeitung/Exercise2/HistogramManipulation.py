@@ -40,6 +40,72 @@ def stretchHistogram(img):
     print("Histogram stretched")
     return result
 
+#function logHistogram
+def logHistogram(img):
+    result = img.copy()
+
+    result_a = 256 / np.log(256)
+
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            result[i,j] = result_a * np.log(result[i,j] + 1)
+
+    return result
+
+#function expHistogram
+def expHistogram(img):
+    result = img.copy()
+
+    result_a = 256 / np.exp(256/256)
+
+    #print(np.exp(256))
+    #print(256 / np.exp(256))
+
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            result[i,j] = result_a * np.exp(result[i,j]/256 - 1)
+
+    return result
+
+#function Inverse
+def inverseHistogram(img):
+
+    result = img.copy()
+
+    result_max = 256 - 1
+
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            result[i,j] = result_max - result[i,j]
+
+    return result
+
+#function Threshold
+def tresholdHistogram(img):
+
+    result = img.copy()
+
+    result_threshold = 256 / 2 
+
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            if result [i,j] < result_threshold:
+                result [i,j] = 0
+            else:
+                result [i,j] = 255
+
+    return result
+
+#function closeGapsHistogram
+def closeGapsHistogram(img):
+
+    result = img.copy()
+
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            print("test")
+
+    return result
 
 # function to create a vector containing the histogram
 def calculateHistogram(img, nrBins):
