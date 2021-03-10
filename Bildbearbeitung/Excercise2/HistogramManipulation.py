@@ -7,6 +7,10 @@ import random
 def applyLUT(img, LUT):
     result = img.copy()
 
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            result[i,j] = LUT[result[i,j]]
+
     return result
 
 # function to equalize a grayscale image
@@ -19,12 +23,12 @@ def equalizeHistogram(img):
     result_hist = cv2.calcHist([result],[0], None, [result_L], [0,result_L])
     result_integral = result_hist.cumsum()
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            result[i,j] = ((result_L-1)/result_N)*result_integral[result[i,j]]
+    result_LUT = np.arange(256)
+    
+    for i in range(result_LUT.size):
+        result_LUT[i] = ((result_L-1)/result_N)*result_integral[result_LUT[i]]
 
-    print("Histogram equalized")
-    return result
+    return applyLUT(result, result_LUT)
 
 # function to stretch a grayscale image
 def stretchHistogram(img):
@@ -34,12 +38,12 @@ def stretchHistogram(img):
     result_max = np.max(result)
     result_L = 256
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            result[i,j] = ((result[i,j] - result_min) / (result_max - result_min)) * (result_L - 1)
+    result_LUT = np.arange(256)
+    
+    for i in range(result_LUT.size):
+        result_LUT[i] = ((result_LUT[i] - result_min) / (result_max - result_min)) * (result_L - 1)
 
-    print("Histogram stretched")
-    return result
+    return applyLUT(result, result_LUT)
 
 #function logHistogram
 def logHistogram(img):
@@ -47,11 +51,12 @@ def logHistogram(img):
 
     result_a = 255 / np.log(255)
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            result[i,j] = result_a * np.log(result[i,j] + 1)
+    result_LUT = np.arange(256)
+    
+    for i in range(result_LUT.size):
+        result_LUT[i] = result_a * np.log(result_LUT[i] + 1)
 
-    return result
+    return applyLUT(result, result_LUT)
 
 #function expHistogram
 def expHistogram(img):
@@ -59,14 +64,15 @@ def expHistogram(img):
 
     result_a = 255 / np.exp(255/255)
 
-    #print(np.exp(256))
-    #print(256 / np.exp(256))
+    #print(np.exp(255))
+    #print(255 / np.exp(255))
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            result[i,j] = result_a * np.exp(result[i,j]/255 - 1)
+    result_LUT = np.arange(256)
+    
+    for i in range(result_LUT.size):
+        result_LUT[i] = result_a * np.exp(result_LUT[i]/255 - 1)
 
-    return result
+    return applyLUT(result, result_LUT)
 
 #function Inverse
 def inverseHistogram(img):
@@ -75,11 +81,12 @@ def inverseHistogram(img):
 
     result_max = 256 - 1
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            result[i,j] = result_max - result[i,j]
+    result_LUT = np.arange(256)
+    
+    for i in range(result_LUT.size):
+        result_LUT[i] = result_max - result_LUT[i]
 
-    return result
+    return applyLUT(result, result_LUT)
 
 #function Threshold
 def tresholdHistogram(img):
@@ -88,26 +95,28 @@ def tresholdHistogram(img):
 
     result_threshold = 255 / 2 
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            if result [i,j] < result_threshold:
-                result [i,j] = 0
-            else:
-                result [i,j] = 255
+    result_LUT = np.arange(256)
+    
+    for i in range(result_LUT.size):
+        if result_LUT[i] < result_threshold:
+            result_LUT[i] = 0
+        else:
+            result_LUT[i] = 255
 
-    return result
+    return applyLUT(result, result_LUT)
 
 #function closeGapsHistogram
 def closeGapsHistogram(img):
 
     result = img.copy()
 
-    for i in range(result.shape[0]):
-        for j in range(result.shape[1]):
-            if result[i,j] >= 4 and result[i,j] <=251:
-                result[i,j] = result[i,j] + random.random()*10 - 5
+    result_LUT = np.arange(256)
     
-    return result
+    for i in range(result_LUT.size):
+        if result_LUT[i] >= 4 and result_LUT[i] <=251:
+                result_LUT[i] = result_LUT[i] + random.random()*10 - 5
+
+    return applyLUT(result, result_LUT)
 
 # function to create a vector containing the histogram
 def calculateHistogram(img, nrBins):
