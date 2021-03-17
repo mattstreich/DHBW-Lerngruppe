@@ -109,14 +109,13 @@ def tresholdHistogram(img):
 def closeGapsHistogram(img):
 
     result = img.copy()
-
-    result_LUT = np.arange(256)
     
-    for i in range(result_LUT.size):
-        if result_LUT[i] >= 4 and result_LUT[i] <=251:
-                result_LUT[i] = result_LUT[i] + random.random()*10 - 5
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            if result[i,j] >= 4 and result[i,j] <=251:
+                result[i,j] = result[i,j] + random.random()*10 - 5
 
-    return applyLUT(result, result_LUT)
+    return result
 
 # function to create a vector containing the histogram
 def calculateHistogram(img, nrBins):
