@@ -72,7 +72,7 @@ def applyMovingAverageFilter(img, kSize):
 
 
             #median uertragen
-            tmp[i,j] = int(average/(kSize*kSize))
+            tmp[i,j] = int(np.round(average/(kSize*kSize)))
 
     #Gefilternes Bild uebertragen
     img = tmp
@@ -85,7 +85,7 @@ def createGaussianKernel(kSize, stdDeviation):
 
     for i in range(kSize):
         for j in range(kSize):
-            kernel[i,j] = ( 1/(np.sqrt(2 * np.pi)) ) * np.exp(-((np.square(i)+np.square(j))/(2*stdDeviation)))
+            kernel[i,j] = ( 1/(np.sqrt(2 * np.pi)*stdDeviation) ) * np.exp(-((np.square(i)+np.square(j))/(2*stdDeviation)))
 
     return kernel
 
@@ -143,7 +143,6 @@ def applyKernelInSpatialDomain(img, kernel):
     #temporaeres Bild zum Speicher der Ergebnisse des Filters
     tmp = img
 
-
     #Bild erweitern, damit Groesse Eingang = Groese Ausgang
     img = cv2.copyMakeBorder(
         img,
@@ -157,13 +156,23 @@ def applyKernelInSpatialDomain(img, kernel):
     for i in range(tmp.shape[0]):
         for j in range(tmp.shape[1]):
 
-            sobel = 0
+            sobel = [[int(img[i,j]),int(img[i,j+1]),int(img[i,j+2])]
+            ,[int(img[i+1,j]),int(img[i+1,j+1]),int(img[i+1,j+2])],
+            [int(img[i+2,j]),int(img[i+2,j+1]),int(img[i+2,j+2])]]
+
+            sobel = np.array(sobel)
+
+            sobel = sobel * kernel
+
+            sumSobel = 0
 
             for u in range(3):
                 for v in range(3):
-                    sobel += img[i+u,j+v] * kernel[2-u,2-v]
+                    sumSobel += sobel[u,v]
+            
+            sumSobel = ((sumSobel/9)+255)/2
 
-            tmp[i,j] = int(np.round(sobel))
+            tmp[i,j] = int(np.round(sumSobel))
 
     #Gefilternes Bild uebertragen
     img = tmp
@@ -172,13 +181,37 @@ def applyKernelInSpatialDomain(img, kernel):
 
 # Extra: create an integral image of the given image
 def createIntegralImage(img):
-    tmp = img
+    tmp = np.zeros((img.shape[0],img.shape[1]))
 
-    tmp = np.cumsum(tmp)
+    for i in range(tmp.shape[0]):
+        for j in range(tmp.shape[1]):
+            tmp[i,j] = int(img[i,j])
 
-    img=tmp
+    img = cv2.copyMakeBorder(
+        img,
+        top=1,
+        bottom=1,
+        left=1,
+        right=1,
+        borderType=cv2.BORDER_CONSTANT
+    )
 
-    return 0
+    tmpIMG = np.zeros((img.shape[0],img.shape[1]))
+
+    for i in range(tmpIMG.shape[0]):
+        for j in range(tmpIMG.shape[1]):
+            tmpIMG[i,j] = int(img[i,j])
+
+    for i in range(tmp.shape[0]):
+        for j in range(tmp.shape[1]):
+            
+            sum1= 0
+
+            sum1= int(tmpIMG[i+1,j])+int(tmpIMG[i,j+1])+int(tmp[i,j])-int(tmpIMG[i,j])
+            tmpIMG[i+1,j+1] = sum1
+            tmp[i,j] = sum1
+
+    return tmp
 
 # Extra: apply the moving average filter by using an integral image
 def applyMovingAverageFilterWithIntegralImage(img, kSize):
@@ -188,39 +221,24 @@ def applyMovingAverageFilterWithIntegralImage(img, kSize):
 
     img = cv2.copyMakeBorder(
         img,
-        top=borderSize,
-        bottom=borderSize,
-        left=borderSize,
-        right=borderSize,
+        top=borderSize+1,
+        bottom=borderSize+1,
+        left=borderSize+1,
+        right=borderSize+1,
         borderType=cv2.BORDER_REFLECT_101
     )
 
-    integral, integralsq = cv2.integral2(img)
-
-    createIntegralImage(integral)
-
-    total_pixel = np.square(kSize*2+1)
+    integral = createIntegralImage(img)
 
     for i in range(tmp.shape[0]):
         for j in range(tmp.shape[1]):
-            s1 = (int(integral[i+kSize,j+kSize])
-            +int(integral[i-kSize,j-kSize])
-            -int(integral[i+kSize,j-kSize])
-            -int(integral[i-kSize,j+kSize]))
 
-            s2 = (int(integralsq[i+kSize,j+kSize])
-            +int(integralsq[i-kSize,j-kSize])
-            -int(integralsq[i+kSize,j-kSize])
-            -int(integralsq[i-kSize,j+kSize]))
+            sumIntegral = (int(integral[i,j])
+            +int(integral[i+kSize,j+kSize])
+            -int(integral[i,j+kSize])
+            -int(integral[i+kSize,j]))
 
-            std = (s2 - (np.square(s1))/total_pixel)/total_pixel
-            
-            if(std < 0): 
-                std = 0
-
-            std = np.sqrt(std)
-
-            tmp[i,j] = int(std)
+            tmp[i,j] = int(sumIntegral/np.square(kSize))
 
     img = tmp 
 
@@ -230,14 +248,15 @@ def applyMovingAverageFilterWithIntegralImage(img, kSize):
 def applyMovingAverageFilterWithSeperatedKernels(img, kSize):
     #temporaeres Bild zum Speicher der Ergebnisse des Filters
     tmp = img
+    tmp_x = img
 
     borderSize = int(kSize/2)
 
     #Bild erweitern, damit Groesse Eingang = Groese Ausgang
     img = cv2.copyMakeBorder(
         img,
-        top=borderSize,
-        bottom=borderSize,
+        top=0,
+        bottom=0,
         left=borderSize,
         right=borderSize,
         borderType=cv2.BORDER_REFLECT_101
@@ -247,17 +266,32 @@ def applyMovingAverageFilterWithSeperatedKernels(img, kSize):
         for j in range(tmp.shape[1]):
 
             average_x = 0
-            average_y = 0
 
             for u in range(kSize):
                 average_x += img[i,j+u]
+              
+            tmp_x[i,j] = int(np.round((average_x)/kSize))
+
+    tmp_x = cv2.copyMakeBorder(
+        tmp_x,
+        top=borderSize,
+        bottom=borderSize,
+        left=0,
+        right=0,
+        borderType=cv2.BORDER_REFLECT_101
+    )
+
+    for i in range(tmp.shape[0]):
+        for j in range(tmp.shape[1]):
+
+            average_y = 0
 
             for u in range(kSize):
-                average_y += img[i+u,j]
-
-            tmp[i,j] = int((average_x + average_y)/(2*kSize))
-
+                average_y += tmp_x[i+u,j]
+              
+            tmp[i,j] = int(np.round((average_y)/kSize))
     #Gefilternes Bild uebertragen
 
     img = tmp
+
     return 0

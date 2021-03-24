@@ -10,7 +10,7 @@ if __name__ == '__main__':
     # choose some sort of border handling that keeps the size of the processed image
 
     #landen des Bildes und umwandeln in schwarz/weiss
-    img = cv2.imread("./SampleData/lena.png",1)
+    img = cv2.imread("./SampleData/redCar.jpg",1)
     imgBW = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
     #Schwarz/Weiss Bild zeigen und speichern
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     cv2.imshow("Moving Average", imgMovingAverage)
     cv2.imwrite("./Output/MovingAverageImage.jpg", imgMovingAverage)
 
-    #Guass Bild Erstellen
+    #Gauss Bild Erstellen
     imgGauss = imgBW.copy()
     IF.applyGaussFilter(imgGauss, 5, 1)
 
@@ -123,6 +123,6 @@ if __name__ == '__main__':
 
     plt.show()
 
-    plt.savefig('./Output/Zeitmessen.jpg')
+    fig.savefig('./Output/Zeitmessen.jpg')
 
     cv2.waitKey(0)
