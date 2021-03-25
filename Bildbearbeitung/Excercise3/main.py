@@ -76,9 +76,10 @@ if __name__ == '__main__':
 
     #Zeitmessen 
     x_min = 3
-    x_max = 7
+    x_max = 9
 
     x = np.arange(x_min,x_max,2)
+    
     y_MA_Filter = np.zeros(x.shape)
     y_MA_Seperate = np.zeros(x.shape)
     y_MA_Intergral = np.zeros(x.shape)
