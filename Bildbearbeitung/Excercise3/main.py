@@ -36,10 +36,10 @@ if __name__ == '__main__':
 
     #Gauss Bild Erstellen
     imgGauss = imgBW.copy()
-    IF.applyGaussFilter(imgGauss, 5, 1)
+    IF.applyGaussFilter(imgGauss, 5, 0.8)
 
     #Gauss Bild zeigen und speichern
-    cv2.imshow("Gauss", imgMovingAverage)
+    cv2.imshow("Gauss", imgGauss)
     cv2.imwrite("./Output/GaussImage.jpg", imgGauss)
 
     Utilities.showHistogram(imgGauss)

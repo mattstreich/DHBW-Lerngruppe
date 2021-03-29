@@ -80,13 +80,12 @@ def applyMovingAverageFilter(img, kSize):
 
 # create a gaussian kernel of arbitrary size
 def createGaussianKernel(kSize, stdDeviation):
-
+    normalize = int(kSize/2)
     kernel = np.empty([kSize,kSize])
 
     for i in range(kSize):
         for j in range(kSize):
-            kernel[i,j] = ( 1/(np.sqrt(2 * np.pi)*stdDeviation) ) * np.exp(-((np.square(i)+np.square(j))/(2*stdDeviation)))
-
+            kernel[i,j] = (1/(2*np.pi*np.square(stdDeviation))) * np.exp(-0.5*((np.square(i-normalize)+np.square(j-normalize))/(np.square(stdDeviation))))
     return kernel
 
 def applyGaussFilter(img, kSize, stdDeviation):
